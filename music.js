@@ -47,7 +47,10 @@ addEventListener("popstate",function(){
  if(!fr)return;
  var w;try{w=fr.contentWindow;var l=w.location;
   if(l.hash&&l.hash!=="#"){l.replace(l.href.split("#")[0]+"#");history.pushState({fr:1},"");return}
-  if(/emg\.html$/.test(l.pathname)){l.replace(new URL("atc.html",l.href).href);history.pushState({fr:1},"");return}
+  var b=w.document.getElementById("bk"),cur=l.href.split("#")[0];
+  if(b){var t=new URL(b.getAttribute("href"),l.href);
+   if(!/(^|\/)(index\.html)?$/.test(t.pathname)&&t.href.split("#")[0]!==cur){l.replace(t.href);history.pushState({fr:1},"");return}}
+  else if(/emg\.html$/.test(l.pathname)){l.replace(new URL("atc.html",l.href).href);history.pushState({fr:1},"");return}
  }catch(x){}
  close(true);
 });
