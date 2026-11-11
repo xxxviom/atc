@@ -43,15 +43,22 @@ document.querySelector("main").addEventListener("click",function(e){
  setTimeout(function(){a.classList.remove("dn");delete a.dataset.busy;openPage(h)},170);
 },true);
 addEventListener("message",function(e){if(fr&&e.source===fr.contentWindow&&e.data&&e.data.icao==="close")close(false)});
-addEventListener("popstate",function(){
+function up(fromPop){
  if(!fr)return;
  var w;try{w=fr.contentWindow;var l=w.location;
-  if(l.hash&&l.hash!=="#"){l.replace(l.href.split("#")[0]+"#");history.pushState({fr:1},"");return}
+  if(l.hash&&l.hash!=="#"){l.replace(l.href.split("#")[0]+"#");if(fromPop)history.pushState({fr:1},"");return}
   var b=w.document.getElementById("bk"),cur=l.href.split("#")[0];
   if(b){var t=new URL(b.getAttribute("href"),l.href);
-   if(!/(^|\/)(index\.html)?$/.test(t.pathname)&&t.href.split("#")[0]!==cur){l.replace(t.href);history.pushState({fr:1},"");return}}
-  else if(/emg\.html$/.test(l.pathname)){l.replace(new URL("atc.html",l.href).href);history.pushState({fr:1},"");return}
+   if(!/(^|\/)(index\.html)?$/.test(t.pathname)&&t.href.split("#")[0]!==cur){l.replace(t.href);if(fromPop)history.pushState({fr:1},"");return}}
+  else if(/emg\.html$/.test(l.pathname)){l.replace(new URL("atc.html",l.href).href);if(fromPop)history.pushState({fr:1},"");return}
  }catch(x){}
- close(true);
-});
+ close(fromPop);
+}
+addEventListener("popstate",function(){up(true)});
+/* Android-застосунок (Capacitor): кнопка/жест «Назад» обробляється тут, а не закриває програму */
+var C=window.Capacitor;
+if(C&&C.isNativePlatform&&C.isNativePlatform()){
+ var A=(C.Plugins&&C.Plugins.App)||(C.registerPlugin&&C.registerPlugin("App"));
+ if(A&&A.addListener)A.addListener("backButton",function(){if(fr)up(false);else if(A.exitApp)A.exitApp()});
+}
 })();

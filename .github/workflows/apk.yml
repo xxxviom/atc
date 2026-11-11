@@ -43,6 +43,14 @@ jobs:
         working-directory: apk
         run: npx cap add android
 
+      - name: Масштабування двома пальцями і автозапуск музики
+        working-directory: apk
+        run: |
+          D=android/app/src/main/java/io/github/xxxviom/atc
+          mkdir -p $D
+          rm -f $D/MainActivity.*
+          cp MainActivity.java $D/MainActivity.java
+
       - name: Іконки
         working-directory: apk
         run: npx @capacitor/assets generate --android --iconBackgroundColor '#0f2a43' --iconBackgroundColorDark '#0f2a43'
