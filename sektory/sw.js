@@ -1,4 +1,4 @@
-const CACHE = 'roster-v7';
+const CACHE = 'roster-v8';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'xlsx.js', 'roster.js', 'alloc.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));

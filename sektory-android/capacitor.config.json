@@ -1,0 +1,8 @@
+{
+  "appId": "io.github.xxxviom.sektory",
+  "appName": "Сектори ACC",
+  "webDir": "../sektory",
+  "android": {
+    "backgroundColor": "#0f1720"
+  }
+}

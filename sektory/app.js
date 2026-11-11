@@ -136,6 +136,18 @@ function run() {
 const startOf = (snap, si) => (snap.starts && snap.starts[si]) || '';
 function tag(p) { return p.perm && !p.perm.includes('С') ? `<span class="tag">${esc(p.perm)}</span>` : ''; }
 
+// у Android-застосунку (Capacitor) не працюють завантаження blob і друк — там замість них «Поділитись»
+const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+const sharePlugin = () => window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
+const canShare = () => (NATIVE && !!sharePlugin()) || !!navigator.share;
+async function shareResult() {
+  const text = asText();
+  try {
+    if (NATIVE && sharePlugin()) await sharePlugin().share({ title: 'Розподіл по секторах ACC', text, dialogTitle: 'Поділитись розподілом' });
+    else await navigator.share({ title: 'Розподіл по секторах ACC', text });
+  } catch {}
+}
+
 function chipHtml(p, attrs, bad) {
   return `<span class="chip${bad ? ' bad' : ''}" ${attrs}${bad ? ' title="Поза допуском цього сектора"' : ''}>${esc(p.name)}${tag(p)}${bad ? '<span class="tag warn">⚠</span>' : ''}</span>`;
 }
@@ -151,8 +163,8 @@ function render(fresh = true) {
   out.push(`<div class="bar"><h2>Розподіл на ${last.day} число<span class="when">сформовано ${new Date(last.saved).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span></h2>
     <button type="button" class="primary" id="again"${sheet ? '' : ' disabled title="Завантаж графік, щоб перемішати знову"'}>Перемішати ще раз</button>
     <button type="button" id="copy">Копіювати</button>
-    <button type="button" id="csv">CSV</button>
-    <button type="button" id="print">Друк</button></div>
+    ${NATIVE ? '' : '<button type="button" id="csv">CSV</button><button type="button" id="print">Друк</button>'}
+    ${canShare() ? '<button type="button" id="share">Поділитись</button>' : ''}</div>
     <p class="note hint">Утримуй людину й перетягни на інше місце, щоб поміняти, або у «Резерв». Торкнись місця, щоб поставити людину зі списку чи вписати вручну.</p>`);
   if (res.selectedCount < res.total) out.push(`<p class="warn">Не вистачає людей: заповнено ${res.selectedCount} з ${res.total} місць.</p>`);
   const missing = data.extras.filter(e => !e.allowed.size);
@@ -184,13 +196,15 @@ function render(fresh = true) {
     <table><thead><tr><th>Рядок</th><th>Прізвище</th><th>Допуск</th><th>Статус</th></tr></thead><tbody>${
     data.all.map(p => { const [t, c] = STATUS[p.status]; return `<tr><td>${p.row}</td><td>${esc(p.name)}${p.below ? ' <span class="tag">нижче</span>' : ''}</td><td>${esc(p.permRaw)}</td><td class="${c}">${t}${p.note ? ' — ' + esc(p.note) : ''}</td></tr>`; }).join('')}</tbody></table></details>`);
   const box = $('result'); box.innerHTML = out.join(''); box.hidden = false;
-  $('again').onclick = run; $('print').onclick = () => print();
+  $('again').onclick = run;
+  if ($('print')) $('print').onclick = () => print();
+  if ($('share')) $('share').onclick = shareResult;
   $('copy').onclick = async e => {
     const b = e.target;
     try { await navigator.clipboard.writeText(asText()); b.textContent = 'Скопійовано ✓'; } catch { b.textContent = 'Не вдалося скопіювати'; }
     setTimeout(() => b.textContent = 'Копіювати', 1600);
   };
-  $('csv').onclick = downloadCsv;
+  if ($('csv')) $('csv').onclick = downloadCsv;
   $('addForm').onsubmit = e => { e.preventDefault(); addManual($('addName').value, $('addPerm').value); render(false); };
   if (fresh) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
