@@ -54,11 +54,14 @@ import * as pdfjsLib from "./lib/pdf.min.js";
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./lib/pdf.worker.min.js", import.meta.url).href;
 const DOCS = {
   sera: { f: "pdf/sera.pdf", t: "SERA" },
-  doc4444: { f: "pdf/doc4444.pdf", t: "Doc 4444" }
+  doc4444: { f: "pdf/doc4444.pdf", t: "Doc 4444" },
+  star_ukbb: { f: "pdf/star_ukbb.pdf", t: "STAR · UKBB", b: "star.html", bt: "‹ STAR" },
+  star_ukkk: { f: "pdf/star_ukkk.pdf", t: "STAR · UKKK", b: "star.html", bt: "‹ STAR" }
 };
 const $ = s => document.getElementById(s);
 const qs = new URLSearchParams(location.search), id = qs.get("d") in DOCS ? qs.get("d") : "sera", D = DOCS[id];
 $("t").textContent = D.t; document.title = D.t;
+if (D.b) { $("bk").href = D.b; $("bk").textContent = D.bt }
 const sc = $("sc"), pages = $("pages"), msg = $("msg"), bar = $("bar");
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 let pdf, N = 0, base = null, zoom = 1, fitW = 1, P = [];   // P[i] = {el, w, h, state, task, canvas, tl, divs, strs}
