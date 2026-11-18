@@ -41,8 +41,8 @@ box-shadow:inset 0 0 0 2px #162f47,inset 0 -3px 0 rgba(0,0,0,.22),0 4px 0 var(--
 #sb:focus-visible{outline:3px solid var(--acc);outline-offset:4px}
 #sb svg{display:block}#sb.off{opacity:.8}#sb.off .w,#sb:not(.off) .x{display:none}
 
-/* inside the shell iframe: keep header clear of the global sound button */
-html.in-fr header{padding-right:72px!important}
+/* inside the shell iframe: keep only the title row clear of the global sound button; search fields and filters use the full width */
+html.in-fr header h1{padding-right:64px}
 
 /* section overlay (index shell) */
 iframe.fr{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:50;background:#0b1722}
