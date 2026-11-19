@@ -21,7 +21,7 @@ public class MainActivity extends BridgeActivity {
   // де env(safe-area-inset-*) не працює.
   private volatile float insTop = 0f, insBottom = 0f;
 
-  private class InsetsBridge {
+  public class InsetsBridge {
     @JavascriptInterface public float top() { return insTop; }
     @JavascriptInterface public float bottom() { return insBottom; }
   }
