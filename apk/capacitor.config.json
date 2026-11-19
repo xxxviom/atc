@@ -2,6 +2,11 @@
   "appId": "io.github.xxxviom.atc",
   "appName": "Довідник ATC",
   "webDir": "www",
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "disable"
+    }
+  },
   "android": {
     "backgroundColor": "#0f2a43"
   }
