@@ -2,13 +2,11 @@ package io.github.xxxviom.atc;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.getcapacitor.BridgeActivity;
 
@@ -27,27 +25,22 @@ public class MainActivity extends BridgeActivity {
     // музика може стартувати без дотику
     s.setMediaPlaybackRequiresUserGesture(false);
 
-    // Відступи під рядок стану, нижню панель, виріз і клавіатуру виставляємо самі (один раз).
-    // Вбудована обробка Capacitor (SystemBars) вимкнена в capacitor.config.json: вона теж додавала
-    // відступ під клавіатуру, і той рахувався двічі. Усередині iframe CSS-відступи (env) не працюють,
-    // тому потрібен саме нативний відступ.
+    // Вікно на весь екран: шпалери видно і під рядком стану, і під нижньою панеллю.
+    // Відступи для вмісту рахує сама веб-сторінка (ui.js бере safe-area з основного документа);
+    // клавіатуру обробляє вбудований SystemBars Capacitor.
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     View decor = getWindow().getDecorView();
     decor.setBackgroundColor(BG);
-    getWindow().setBackgroundDrawable(new ColorDrawable(BG));   // фон за смугами й під клавіатурою
+    getWindow().setBackgroundDrawable(new ColorDrawable(BG));
+    getWindow().setStatusBarColor(Color.TRANSPARENT);
+    getWindow().setNavigationBarColor(Color.TRANSPARENT);
+    if (Build.VERSION.SDK_INT >= 29) {
+      getWindow().setNavigationBarContrastEnforced(false);   // без сірої підложки під жестовою смугою
+    }
     WindowInsetsControllerCompat ctl = WindowCompat.getInsetsController(getWindow(), decor);
     if (ctl != null) {
       ctl.setAppearanceLightStatusBars(false);     // світлі значки на темному фоні
       ctl.setAppearanceLightNavigationBars(false);
     }
-    View content = findViewById(android.R.id.content);
-    ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
-      Insets bars = insets.getInsets(
-          WindowInsetsCompat.Type.systemBars()
-              | WindowInsetsCompat.Type.displayCutout()
-              | WindowInsetsCompat.Type.ime());
-      v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
-      return WindowInsetsCompat.CONSUMED;
-    });
-    ViewCompat.requestApplyInsets(content);
   }
 }
