@@ -77,7 +77,13 @@ jobs:
 
       - name: Зібрати APK
         working-directory: apk/android
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          # Maven іноді тимчасово недоступний на раннері: до трьох спроб
+          for i in 1 2 3; do
+            ./gradlew assembleDebug --no-daemon && exit 0
+            echo "Спроба $i не вдалася, повтор через 40 с"; sleep 40
+          done
+          exit 1
 
       - uses: actions/upload-artifact@v4
         with:
