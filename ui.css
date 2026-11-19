@@ -51,3 +51,7 @@ html.in-fr header{top:0!important;padding-top:calc(var(--sat,0px) + 12px)!import
 /* section overlay (index shell) */
 iframe.fr{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:50;background:#0b1722}
 #sb{z-index:60}
+
+/* cards on content pages: translucent glass so the wallpaper shows through everywhere, like on the main menu */
+.c,.dt{background:rgba(20,44,68,.62)!important;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+button.it{background:rgba(20,44,68,.66)!important}

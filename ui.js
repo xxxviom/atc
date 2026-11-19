@@ -8,11 +8,11 @@ if(FR)document.documentElement.classList.add("in-fr");
 // тому сторінки в iframe беруть виміряні значення з основного документа.
 function probe(){var d=document,p=d.createElement("div"),sd=["top","right","bottom","left"].map(function(k){return "max(env(safe-area-inset-"+k+",0px),var(--safe-area-inset-"+k+",0px))"}).join(" ");
  p.style.cssText="position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;box-sizing:content-box;padding:"+sd;
- d.documentElement.appendChild(p);var c=getComputedStyle(p),r={t:parseFloat(c.paddingTop)||0,b:parseFloat(c.paddingBottom)||0};p.remove();return r}
+ d.documentElement.appendChild(p);var c=getComputedStyle(p),r={t:parseFloat(c.paddingTop)||0,b:parseFloat(c.paddingBottom)||0};p.remove();try{if(window.AndroidInsets){r.t=Math.max(r.t,AndroidInsets.top());r.b=Math.max(r.b,AndroidInsets.bottom())}}catch(e){}return r}
 window.icaoInsets=probe;
 function insets(){var r;try{r=FR&&parent.icaoInsets?parent.icaoInsets():probe()}catch(e){r=probe()}
  var st=document.documentElement.style;st.setProperty("--sat",r.t+"px");st.setProperty("--sab",r.b+"px")}
-insets();addEventListener("resize",insets);addEventListener("pageshow",insets);
+insets();setTimeout(insets,300);setTimeout(insets,1200);addEventListener("resize",insets);addEventListener("pageshow",insets);
 var go=0,SEL="a.m,a.it,button.r";
 function el(e){return e.target.closest&&e.target.closest(SEL)}
 function clr(){document.querySelectorAll(".dn").forEach(function(n){n.classList.remove("dn")})}
